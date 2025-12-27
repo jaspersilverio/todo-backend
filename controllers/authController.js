@@ -25,7 +25,11 @@ exports.register = async (req, res) => {
     });
   } catch (error) {
     console.error('Error registering user:', error);
-    res.status(500).json({ error: 'Failed to register user', details: error.message });
+    // Don't expose internal error details in production
+    const errorMessage = process.env.NODE_ENV === 'production' 
+      ? 'Failed to register user. Please try again later.' 
+      : error.message;
+    res.status(500).json({ error: 'Failed to register user', details: errorMessage });
   }
 };
 
@@ -50,6 +54,10 @@ exports.login = async (req, res) => {
     });
   } catch (error) {
     console.error('Error during login:', error);
-    res.status(500).json({ error: 'Failed to login', details: error.message });
+    // Don't expose internal error details in production
+    const errorMessage = process.env.NODE_ENV === 'production' 
+      ? 'Failed to login. Please try again later.' 
+      : error.message;
+    res.status(500).json({ error: 'Failed to login', details: errorMessage });
   }
 };

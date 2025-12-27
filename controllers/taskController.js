@@ -30,7 +30,11 @@ exports.getTasks = async (req, res) => {
     res.json(formattedTasks);
   } catch (error) {
     console.error('Error fetching tasks:', error);
-    res.status(500).json({ error: 'Failed to fetch tasks', details: error.message });
+    // Don't expose internal error details in production
+    const errorMessage = process.env.NODE_ENV === 'production' 
+      ? 'Failed to fetch tasks. Please try again later.' 
+      : error.message;
+    res.status(500).json({ error: 'Failed to fetch tasks', details: errorMessage });
   }
 };
 
@@ -111,7 +115,11 @@ exports.createTask = async (req, res) => {
     res.status(201).json(formattedTask);
   } catch (error) {
     console.error('Error creating task:', error);
-    res.status(500).json({ error: 'Failed to create task', details: error.message });
+    // Don't expose internal error details in production
+    const errorMessage = process.env.NODE_ENV === 'production' 
+      ? 'Failed to create task. Please try again later.' 
+      : error.message;
+    res.status(500).json({ error: 'Failed to create task', details: errorMessage });
   }
 };
 
@@ -205,7 +213,11 @@ exports.updateTask = async (req, res) => {
     res.json(formattedTask);
   } catch (error) {
     console.error('Error updating task:', error);
-    res.status(500).json({ error: 'Failed to update task', details: error.message });
+    // Don't expose internal error details in production
+    const errorMessage = process.env.NODE_ENV === 'production' 
+      ? 'Failed to update task. Please try again later.' 
+      : error.message;
+    res.status(500).json({ error: 'Failed to update task', details: errorMessage });
   }
 };
 
@@ -239,6 +251,10 @@ exports.deleteTask = async (req, res) => {
     res.json({ message: 'Task deleted successfully', taskId: taskId });
   } catch (error) {
     console.error('Error deleting task:', error);
-    res.status(500).json({ error: 'Failed to delete task', details: error.message });
+    // Don't expose internal error details in production
+    const errorMessage = process.env.NODE_ENV === 'production' 
+      ? 'Failed to delete task. Please try again later.' 
+      : error.message;
+    res.status(500).json({ error: 'Failed to delete task', details: errorMessage });
   }
 };

@@ -4,13 +4,18 @@ class Task {
   static async findAllByUserId(userId) {
     try {
       const userIdInt = parseInt(userId, 10);
+      if (isNaN(userIdInt)) {
+        throw new Error('Invalid userId');
+      }
       const [rows] = await db.execute(
         'SELECT * FROM tasks WHERE userId = ? ORDER BY dueDate ASC, dueTime ASC, priority DESC',
         [userIdInt]
       );
       return rows;
     } catch (error) {
-      throw error;
+      // Log error but don't crash - return empty array for graceful degradation
+      console.error('Error fetching tasks for userId', userId, ':', error.message);
+      throw error; // Re-throw so controller can handle it
     }
   }
 
